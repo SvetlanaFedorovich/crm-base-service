@@ -1,7 +1,7 @@
-package mvpproject.crmbaseservice.services;
+package mvpproject.crmbaseservice.service;
 
-import mvpproject.crmbaseservice.entities.Product;
-import mvpproject.crmbaseservice.repositories.ProductRepositoryImpl;
+import mvpproject.crmbaseservice.entity.Product;
+import mvpproject.crmbaseservice.repository.ProductRepositoryImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,19 +28,11 @@ public class ProductService {
         return response;
     }
 
-    public String getProductByName(String productName) {
-        return productRepositoryImpl.findByName(productName);
-    }
-
     public String createClient(Product product) {
         return productRepositoryImpl.create(product);
     }
 
     public String update(Long id, BigDecimal newPrice) {
         return productRepositoryImpl.updateById(id, newPrice);
-    }
-
-    public void deleteById(Long id) {
-        productRepositoryImpl.deleteById(id);
     }
 }
