@@ -1,6 +1,6 @@
-package mvpproject.crmbaseservice.repositories;
+package mvpproject.crmbaseservice.repository;
 
-import mvpproject.crmbaseservice.entities.Client;
+import mvpproject.crmbaseservice.entity.Client;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -27,12 +27,8 @@ public class ClientRepositoryImpl implements ClientRepository {
         return Optional.empty();
     }
 
-    public String updateById(Long id) {
-        return "Client by id " + id + "is updated";
-    }
-
-    public String findByName(String name) {
-        return "The client by name " + name + " is found";
+    public String updateById(Long id, String newBankDetails) {
+        return "Client by id " + id + "is updated: " + newBankDetails;
     }
 
     @Override
@@ -61,7 +57,7 @@ public class ClientRepositoryImpl implements ClientRepository {
 
     @Override
     public void deleteById(Long aLong) {
-        System.out.printf("The client by id is deleted.");
+        System.out.println("The client by id is deleted.");
     }
 
     @Override

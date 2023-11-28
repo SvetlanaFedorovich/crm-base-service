@@ -1,6 +1,6 @@
-package mvpproject.crmbaseservice.repositories;
+package mvpproject.crmbaseservice.repository;
 
-import mvpproject.crmbaseservice.entities.Product;
+import mvpproject.crmbaseservice.entity.Product;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
@@ -14,10 +14,6 @@ public class ProductRepositoryImpl implements ProductRepository {
 
     public String updateById(Long id, BigDecimal newPrice) {
         return "Client by id " + id + "is " + newPrice;
-    }
-
-    public String findByName(String name) {
-        return "The client by name " + name + " is found";
     }
 
     public String readAll() {
