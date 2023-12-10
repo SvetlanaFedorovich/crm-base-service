@@ -1,11 +1,25 @@
 plugins {
     id 'java'
+    id 'checkstyle'
     id 'org.springframework.boot' version '3.1.5'
     id 'io.spring.dependency-management' version '1.1.3'
 }
 
+ext {
+    junitVersion = '5.7.2'
+    lombokVersion = '1.18.30'
+    modelmaper = '3.2.0'
+    openapi = '2.3.0'
+}
+
+checkstyle {
+    toolVersion '7.8.1'
+    configFile file("checkstyle.xml")
+}
+
 group = 'mvp-project'
 version = '0.0.1-SNAPSHOT'
+
 
 java {
     sourceCompatibility = '17'
@@ -16,12 +30,15 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    implementation('org.springframework.boot:spring-boot-starter-web')
-    implementation('org.springframework.boot:spring-boot-starter-data-jpa')
-    implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-ui', version: '2.0.0'
-    compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.30'
+    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:${openapi}"
+    implementation "org.springframework.boot:spring-boot-starter-web"
+    implementation "org.springframework.boot:spring-boot-starter-data-jpa"
+    implementation "org.modelmapper:modelmapper:${modelmaper}"
+    compileOnly "org.projectlombok:lombok:${lombokVersion}"
+    annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+    runtimeOnly "org.postgresql:postgresql"
+
+
 }
 
 tasks.named('bootBuildImage') {
@@ -31,3 +48,4 @@ tasks.named('bootBuildImage') {
 tasks.named('test') {
     useJUnitPlatform()
 }
+
