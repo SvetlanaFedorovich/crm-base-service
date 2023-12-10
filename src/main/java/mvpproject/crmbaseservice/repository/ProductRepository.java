@@ -1,7 +1,7 @@
 package mvpproject.crmbaseservice.repository;
 
-import mvpproject.crmbaseservice.entity.Product;
-import org.springframework.data.repository.CrudRepository;
+import mvpproject.crmbaseservice.model.entity.ProductEntity;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface ProductRepository extends CrudRepository<Product, Long> {
+public interface ProductRepository extends JpaRepository<ProductEntity, Long> {
 }

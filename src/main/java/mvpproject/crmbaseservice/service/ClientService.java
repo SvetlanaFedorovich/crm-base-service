@@ -1,42 +1,51 @@
 package mvpproject.crmbaseservice.service;
 
-import mvpproject.crmbaseservice.entity.Client;
-import mvpproject.crmbaseservice.repository.ClientRepositoryImpl;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import mvpproject.crmbaseservice.model.dto.ClientDto;
+import mvpproject.crmbaseservice.model.entity.ClientEntity;
+import mvpproject.crmbaseservice.model.mapper.ClientConverter;
+import mvpproject.crmbaseservice.repository.ClientRepository;
+import mvpproject.crmbaseservice.service.util.UserNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class ClientService {
 
-    @Autowired
-    private ClientRepositoryImpl clientRepositoryImpl;
+    private final ClientRepository clientRepository;
+    private final ClientConverter clientConverter;
 
-    public String getClients() {
-        return clientRepositoryImpl.readAll();
+    @Transactional
+    public Optional<ClientDto> create(ClientDto client) {
+        ClientEntity newUser = clientConverter.convertClientEntityFromDto(client);
+        return Optional.of(clientConverter.convertFromClientEntityToDto(clientRepository.save(newUser)));
     }
 
-    public String getClientById(Long id) {
-        String response = null;
-        if (id != 0) {
-            Optional<Client> byId = clientRepositoryImpl.findById(id);
-            if (byId.isEmpty()) {
-                response = "is empty";
-            } else {
-                response = "The client by id is found.";
-            }
-            return response;
-        } else {
-            return "id is 0";
+    public List<ClientDto> getAll() {
+        return clientRepository.findAll()
+                .stream()
+                .map(clientConverter::convertFromClientEntityToDto)
+                .toList();
+    }
+
+    public Optional<ClientDto> getById(Long id) {
+        Optional<ClientEntity> user = clientRepository.findById(id);
+        return Optional.of(user.map(clientConverter::convertFromClientEntityToDto)
+                .orElseThrow(UserNotFoundException::new));
+    }
+
+    @Transactional
+    public Optional<ClientDto> update(Long id, ClientDto update) {
+        Optional<ClientEntity> existClient = clientRepository.findById(id);
+        if (existClient.isPresent()) {
+            ClientEntity client = existClient.get();
+            clientConverter.updateClient(update, client);
+            return Optional.of(clientConverter.convertFromClientEntityToDto(clientRepository.save(client)));
         }
-    }
-
-    public String createClient(Client client) {
-        return clientRepositoryImpl.create(client);
-    }
-
-    public String update(Long id, String newBankDetails) {
-        return clientRepositoryImpl.updateById(id, newBankDetails);
+        return Optional.empty();
     }
 }
