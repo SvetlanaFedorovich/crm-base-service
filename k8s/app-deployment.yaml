@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: base-service-deployment
+  labels:
+    app: base-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: base-service
+  template:
+    metadata:
+      labels:
+        app: base-service
+    spec:
+      containers:
+        - name: crm-base-service
+          image: crm-base-service
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          env:
+            - name: DATABASE_USER
+              valueFrom:
+                configMapKeyRef:
+                  key: POSTGRES_USER
+                  name: postgres-configuration
+            - name: DATABASE_NAME
+              valueFrom:
+                configMapKeyRef:
+                  key: POSTGRES_DB
+                  name: postgres-configuration
+            - name: DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: POSTGRES_PASSWORD
+                  name: postgres-credentials
+
+

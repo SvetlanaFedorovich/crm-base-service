@@ -1,0 +1,43 @@
+package mvpproject.crmbaseservice.model.entity;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Schema(description = "Сущность клиента")
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
+@Entity
+@Table(name = "clients")
+public class ClientEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long clientId;
+
+    @Column(name = "full_name", nullable = false, length = 20)
+    @Schema(description = "Наименование", example = "ООО Океан")
+    private String clientName;
+
+    @Column(name = "address", nullable = false, length = 100)
+    @Schema(description = "Адрес")
+    private String address;
+
+    @Column(name = "payer_account_number", nullable = false, length = 40, unique = true)
+    @Schema(description = "УНН", example = "53154714Т")
+    private String payerAccountNumber;
+
+    @Column(name = "bank_details", nullable = false, length = 100)
+    @Schema(description = "Банковские реквизиты")
+    private String bankDetails;
+}

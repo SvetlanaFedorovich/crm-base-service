@@ -3,53 +3,59 @@ package mvpproject.crmbaseservice.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.AllArgsConstructor;
-import mvpproject.crmbaseservice.entity.Client;
+import lombok.RequiredArgsConstructor;
+import mvpproject.crmbaseservice.model.dto.ClientDto;
 import mvpproject.crmbaseservice.service.ClientService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+import java.util.Optional;
 
 @Tag(name = "Client controller", description = "Содержит эндпойнты для работы с клиентами")
 @RestController
-@AllArgsConstructor
+@RequiredArgsConstructor
+@RequestMapping("/client")
 public class ClientController {
 
-    @Autowired
-    private ClientService clientService;
+    private final ClientService clientService;
 
-    @Operation(
-            summary = "Получить список всех клиентов",
-            description = "Позволяет получить список всех клиентов из базы данных"
-    )
-    @GetMapping("/client")
-    public String getClients() {
-        return clientService.getClients();
+    @Operation(summary = "Добавить нового клиента",
+            description = "Позволяет добавить нового клиента в базу данных")
+    @PostMapping("/new")
+    public ResponseEntity<Optional<ClientDto>> create(@Parameter(description = "Описание нового клиента")
+                                                      @RequestBody ClientDto client) {
+        return ResponseEntity.ok(clientService.create(client));
     }
 
-    @Operation(
-            summary = "Получить описание клиента по id",
-            description = "Позволяет получить описание конкретного клиента по его id из базы данных"
-    )
-    @GetMapping("/client/{clientId}")
-    public String getClient(@PathVariable("clientId") @Parameter(description = "Идентификатор клиента") Long clientId) {
-        return clientService.getClientById(clientId);
+    @Operation(summary = "Получить список всех клиентов",
+            description = "Позволяет получить список всех клиентов из базы данных")
+    @GetMapping("/list")
+    public ResponseEntity<List<ClientDto>> getAll() {
+        return ResponseEntity.ok(clientService.getAll());
     }
 
-    @Operation(
-            summary = "Добавить нового клиента",
-            description = "Позволяет добавить нового клиента в базу данных"
-    )
-    @PostMapping("/client")
-    public String create(@RequestBody @Parameter(description = "Описание нового клиента") Client client) {
-        return clientService.createClient(client);
+    @Operation(summary = "Получить описание клиента по id",
+            description = "Позволяет получить описание конкретного клиента по его id из базы данных")
+    @GetMapping("{id}")
+    public ResponseEntity<ClientDto> getClient(@PathVariable Long id) {
+        return clientService.getById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
-    @Operation(
-            summary = "Отредактировать банковские реквизиты клиента",
-            description = "Позволяет отредактировать банковские реквизиты клиента в базе данных"
-    )
-    @PutMapping("/client/{clientId}/{newBankDetails}")
-    public String update(@PathVariable @Parameter(description = "Идентификатор клиента") Long clientId, @PathVariable @Parameter(description = "новые банковские реквизиты") String newBankDetails) {
-        return clientService.update(clientId, newBankDetails);
+    @Operation(summary = "Отредактировать банковские реквизиты клиента",
+            description = "Позволяет отредактировать банковские реквизиты клиента в базе данных")
+    @PutMapping("{id}")
+    public ResponseEntity<ClientDto> update(@PathVariable Long id, @RequestBody ClientDto updateClient) {
+        return clientService.update(id, updateClient)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 }
