@@ -10,5 +10,4 @@ import lombok.NoArgsConstructor;
 public class UserErrorResponse {
 
     private String massage;
-    private long timestamp;
 }

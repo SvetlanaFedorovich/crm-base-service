@@ -12,13 +12,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Schema(description = "Сущность клиента")
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
+
 @Data
 @Entity
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "clients")
+@Schema(description = "Сущность клиента")
 public class ClientEntity {
 
     @Id
