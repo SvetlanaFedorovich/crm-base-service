@@ -1,6 +1,7 @@
 package mvpproject.crmbaseservice.service;
 
-import mvpproject.crmbaseservice.model.dto.ClientDto;
+import mvpproject.crmbaseservice.TestData;
+import mvpproject.crmbaseservice.model.dto.ClientDTO;
 import mvpproject.crmbaseservice.model.entity.ClientEntity;
 import mvpproject.crmbaseservice.model.mapper.ClientConverter;
 import mvpproject.crmbaseservice.repository.ClientRepository;
@@ -13,6 +14,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -20,7 +22,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class ClientServiceTest {
+class ClientServiceTest extends TestData {
 
     @Mock
     private ClientRepository clientRepository;
@@ -38,17 +40,42 @@ class ClientServiceTest {
 
     @Test
     void whenGetByIdInvokedThenExpectClientIsReturned() {
-        when(clientRepository.findById(anyLong())).thenReturn(Optional.of(ivanclient));
-        Optional<ClientDto> clientDto = clientService.getById(anyLong());
+        when(clientRepository.findById(anyLong())).thenReturn(Optional.of(ivanClient()));
+        Optional<ClientDTO> clientDto = clientService.getById(anyLong());
         Assertions.assertThat(clientDto).isNotEmpty();
-        Assertions.assertThat(clientDto.get().getClientName()).isEqualTo(ivanclient.getClientName());
+        Assertions.assertThat(clientDto.get().getClientName()).isEqualTo(ivanClient().getClientName());
         verify(clientRepository).findById(anyLong());
     }
 
-    private ClientEntity ivanclient = ClientEntity.builder()
-            .clientName("Ivan")
-            .address("Gomel")
-            .payerAccountNumber("1")
-            .bankDetails("Bank")
-            .build();
+
+    @Test
+    void whenGetAllInvokedThenAllTheClientsAreReturned() {
+        when(clientRepository.findAll()).thenReturn(List.of(kiraClient(), ivanClient()));
+        clientService.getAll().forEach(ClientDTO::getClientName);
+        String[] expected = new String[]{kiraClient().getClientName(), ivanClient().getClientName()
+        };
+        Assertions.assertThat(expected).containsExactlyInAnyOrder(kiraClient().getClientName(), ivanClient().getClientName());
+    }
+
+    @Test
+    void whenCreatedInvokedWithClientThenClientIsSaved() {
+        when(clientRepository.findAll()).thenReturn(List.of(clientConverter.convertClientEntityFromDto(testClient())));
+        when(clientRepository.save(clientConverter.convertClientEntityFromDto(testClient())))
+                .thenReturn(clientConverter.convertClientEntityFromDto(testClient()));
+
+        clientService.create(testClient());
+        List<String> allUserEmail = clientRepository.findAll().stream()
+                .map(ClientEntity::getClientName)
+                .toList();
+        Assertions.assertThat(allUserEmail).contains(testClient().getClientName());
+    }
+
+    @Test
+    void whenUpdateByIdThenSavedClientUpdate() {
+        when(clientRepository.findById(anyLong())).thenReturn(Optional.of(ivanClient()));
+        when(clientRepository.save(ivanClient())).thenReturn(ivanClient());
+
+        clientService.update(anyLong(), clientConverter.convertFromClientEntityToDto(ivanClient()));
+        Assertions.assertThat(ivanClient().getClientName()).contains(ivanClient().getClientName());
+    }
 }

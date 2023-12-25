@@ -19,7 +19,7 @@ checkstyle {
 }
 
 group = 'mvp-project'
-version = '0.0.1-SNAPSHOT'
+version = '1.0.1'
 
 
 java {
@@ -35,12 +35,12 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-starter-web"
     implementation "org.springframework.boot:spring-boot-starter-data-jpa"
     implementation "org.modelmapper:modelmapper:${modelmaper}"
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation "org.springframework.boot:spring-boot-starter-test"
     testImplementation "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
     compileOnly "org.projectlombok:lombok:${lombokVersion}"
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
-    runtimeOnly "org.postgresql:postgresql"
+    runtimeOnly 'org.postgresql:postgresql'
 }
 
 test {
@@ -55,6 +55,7 @@ jacocoTestReport {
         classDirectories.setFrom(files(classDirectories.files.collect {
             fileTree(dir: it, exclude: [
                     "mvpproject/crmbaseservice/config/**",
+                    "mvpproject/crmbaseservice/CrmBaseServiceApplication.java"
             ])
         }))
     }
