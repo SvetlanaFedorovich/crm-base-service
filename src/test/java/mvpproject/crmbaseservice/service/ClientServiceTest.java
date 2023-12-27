@@ -42,7 +42,7 @@ class ClientServiceTest extends TestData {
     void whenGetByIdInvokedThenExpectClientIsReturned() {
         when(clientRepository.findById(anyLong())).thenReturn(Optional.of(ivanClient()));
         Optional<ClientDTO> clientDto = clientService.getById(anyLong());
-        Assertions.assertThat(clientDto).isNotEmpty();
+        Assertions.assertThat(clientDto).isNotNull();
         Assertions.assertThat(clientDto.get().getClientName()).isEqualTo(ivanClient().getClientName());
         verify(clientRepository).findById(anyLong());
     }
