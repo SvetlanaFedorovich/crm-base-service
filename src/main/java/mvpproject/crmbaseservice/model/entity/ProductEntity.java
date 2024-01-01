@@ -7,19 +7,25 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
-@Schema(description = "Сущность товара")
+
 @Data
 @Entity
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "products")
+@Schema(description = "Сущность товара")
 public class ProductEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Schema(accessMode = Schema.AccessMode.READ_ONLY)
     private Long productId;
 
     @Column(name = "product_name", nullable = false, length = 100, unique = true)
@@ -38,3 +44,5 @@ public class ProductEntity {
     @Schema(description = "Единица измерения", example = "шт.")
     private String unit;
 }
+
+

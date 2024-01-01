@@ -19,7 +19,7 @@ spec:
           image: crm-base-service
           imagePullPolicy: IfNotPresent
           ports:
-            - containerPort: 8080
+            - containerPort: 8081
           env:
             - name: DATABASE_USER
               valueFrom:

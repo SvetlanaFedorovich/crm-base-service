@@ -1,7 +1,7 @@
 package mvpproject.crmbaseservice.service;
 
 import lombok.RequiredArgsConstructor;
-import mvpproject.crmbaseservice.model.dto.ClientDto;
+import mvpproject.crmbaseservice.model.dto.ClientDTO;
 import mvpproject.crmbaseservice.model.entity.ClientEntity;
 import mvpproject.crmbaseservice.model.mapper.ClientConverter;
 import mvpproject.crmbaseservice.repository.ClientRepository;
@@ -20,26 +20,26 @@ public class ClientService {
     private final ClientConverter clientConverter;
 
     @Transactional
-    public Optional<ClientDto> create(ClientDto client) {
+    public Optional<ClientDTO> create(ClientDTO client) {
         ClientEntity newUser = clientConverter.convertClientEntityFromDto(client);
         return Optional.of(clientConverter.convertFromClientEntityToDto(clientRepository.save(newUser)));
     }
 
-    public List<ClientDto> getAll() {
+    public List<ClientDTO> getAll() {
         return clientRepository.findAll()
                 .stream()
                 .map(clientConverter::convertFromClientEntityToDto)
                 .toList();
     }
 
-    public Optional<ClientDto> getById(Long id) {
+    public Optional<ClientDTO> getById(Long id) {
         Optional<ClientEntity> user = clientRepository.findById(id);
         return Optional.of(user.map(clientConverter::convertFromClientEntityToDto)
                 .orElseThrow(UserNotFoundException::new));
     }
 
     @Transactional
-    public Optional<ClientDto> update(Long id, ClientDto update) {
+    public Optional<ClientDTO> update(Long id, ClientDTO update) {
         Optional<ClientEntity> existClient = clientRepository.findById(id);
         if (existClient.isPresent()) {
             ClientEntity client = existClient.get();
