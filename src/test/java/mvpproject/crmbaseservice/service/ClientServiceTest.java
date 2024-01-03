@@ -4,9 +4,11 @@ import mvpproject.crmbaseservice.model.dto.ClientDto;
 import mvpproject.crmbaseservice.model.entity.ClientEntity;
 import mvpproject.crmbaseservice.model.mapper.ClientConverter;
 import mvpproject.crmbaseservice.repository.ClientRepository;
+import mvpproject.crmbaseservice.service.util.ClientCreateException;
 import org.assertj.core.api.Assertions;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -20,7 +22,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class ClientServiceTest {
+public class ClientServiceTest {
 
     @Mock
     private ClientRepository clientRepository;
@@ -36,10 +38,23 @@ class ClientServiceTest {
         clientService = new ClientService(clientRepository, clientConverter);
     }
 
+//    @Test(expected = ClientCreateException.class)
+    @org.junit.jupiter.api.Test
+    public void createClientWithEmptyFieldShouldGetException() {
+                assertThrows(ClientCreateException.class,
+                ()->{clientService.create(clientFromRequestWithEmptyFields);});
+//        clientService.create(clientFromRequestWithEmptyFields);
+    }
+
     @Test
-    void whenGetByIdInvokedThenExpectClientIsReturned() {
+    public void whenGetByIdInvokedThenExpectClientIsReturned() {
         when(clientRepository.findById(anyLong())).thenReturn(Optional.of(ivanclient));
-        Optional<ClientDto> clientDto = clientService.getById(anyLong());
+        Optional<ClientDto> clientDto = null;
+        try {
+            clientDto = clientService.getById(anyLong());
+        } catch (ClientCreateException e) {
+            throw new RuntimeException(e);
+        }
         Assertions.assertThat(clientDto).isNotEmpty();
         Assertions.assertThat(clientDto.get().getClientName()).isEqualTo(ivanclient.getClientName());
         verify(clientRepository).findById(anyLong());
@@ -50,5 +65,12 @@ class ClientServiceTest {
             .address("Gomel")
             .payerAccountNumber("1")
             .bankDetails("Bank")
+            .build();
+
+    private ClientDto clientFromRequestWithEmptyFields = ClientDto.builder()
+            .clientName("")
+            .address("")
+            .payerAccountNumber("")
+            .bankDetails("")
             .build();
 }

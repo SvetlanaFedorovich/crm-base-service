@@ -44,7 +44,8 @@ public class ProductController {
 //            description = "Позволяет обновить цену определенного товара в базе данных по его id"
 //    )
 //    @PutMapping("/product/{productId}/{newPrice}")
-//    public String update(@PathVariable @Parameter(description = "Идентификатор товара") Long productId, @PathVariable @Parameter(description = "Новая цена") BigDecimal newPrice) {
+//    public String update(@PathVariable @Parameter(description = "Идентификатор товара") Long productId,
+//    @PathVariable @Parameter(description = "Новая цена") BigDecimal newPrice) {
 //        return productService.update(productId, newPrice);
 //    }
 }
