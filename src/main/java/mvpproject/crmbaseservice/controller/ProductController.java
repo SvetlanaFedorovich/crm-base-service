@@ -1,16 +1,18 @@
-package mvpproject.crmbaseservice.controller;
-
-import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.RequiredArgsConstructor;
-import mvpproject.crmbaseservice.service.ProductService;
-import org.springframework.web.bind.annotation.RestController;
-
-@Tag(name = "Product controller", description = "Содержит эндпойнты для работы с товаром")
-@RestController
-@RequiredArgsConstructor
-public class ProductController {
-
-    private final ProductService productService;
+//package mvpproject.crmbaseservice.controller;
+//
+//import io.swagger.v3.oas.annotations.Operation;
+//import io.swagger.v3.oas.annotations.Parameter;
+//import io.swagger.v3.oas.annotations.tags.Tag;
+//import lombok.RequiredArgsConstructor;
+//import mvpproject.crmbaseservice.service.ProductService;
+//import org.springframework.web.bind.annotation.*;
+//
+//@Tag(name = "Product controller", description = "Содержит эндпойнты для работы с товаром")
+//@RestController
+//@RequiredArgsConstructor
+//public class ProductController {
+//
+//    private final ProductService productService;
 //
 //    @Operation(
 //            summary = "Прочитать все товары",
@@ -47,4 +49,4 @@ public class ProductController {
 //    public String update(@PathVariable @Parameter(description = "Идентификатор товара") Long productId, @PathVariable @Parameter(description = "Новая цена") BigDecimal newPrice) {
 //        return productService.update(productId, newPrice);
 //    }
-}
+//}
