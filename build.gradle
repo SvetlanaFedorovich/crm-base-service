@@ -19,7 +19,7 @@ checkstyle {
 }
 
 group = 'mvp-project'
-version = '1.0.1'
+version = '1.0.2'
 
 tasks.withType(Checkstyle) {
     ignoreFailures true
@@ -39,6 +39,7 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-starter-web"
     implementation "org.springframework.boot:spring-boot-starter-data-jpa"
     implementation "org.modelmapper:modelmapper:${modelmaper}"
+    implementation group: 'org.slf4j', name: 'slf4j-api', version: '2.0.11'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation group: 'junit', name: 'junit', version: '4.13.2'
     testImplementation "org.junit.jupiter:junit-jupiter-api:${junitVersion}"

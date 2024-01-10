@@ -1,7 +1,14 @@
-package mvpproject.crmbaseservice.service.util;
+package mvpproject.crmbaseservice.error;
 
-public class ClientCreateException extends Exception {
-    public ClientCreateException() {
+import lombok.Getter;
+import lombok.Setter;
+import mvpproject.crmbaseservice.error.exception.CustomException;
+
+@Setter
+@Getter
+public class ClientCreateException extends RuntimeException {
+
+        public ClientCreateException() {
     }
 
     public ClientCreateException(String message) {

@@ -1,4 +1,4 @@
-package mvpproject.crmbaseservice.service.util;
+package mvpproject.crmbaseservice.error;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,5 +9,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UserErrorResponse {
 
-    private String massage;
+    private String message;
 }

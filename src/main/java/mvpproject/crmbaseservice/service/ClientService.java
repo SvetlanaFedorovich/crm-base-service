@@ -1,17 +1,20 @@
 package mvpproject.crmbaseservice.service;
 
 import lombok.RequiredArgsConstructor;
+import mvpproject.crmbaseservice.error.exception.CustomException;
 import mvpproject.crmbaseservice.model.dto.ClientDTO;
 import mvpproject.crmbaseservice.model.entity.ClientEntity;
 import mvpproject.crmbaseservice.model.mapper.ClientConverter;
 import mvpproject.crmbaseservice.repository.ClientRepository;
-import mvpproject.crmbaseservice.service.util.ClientCreateException;
-import mvpproject.crmbaseservice.service.util.CustomExceptionText;
+import mvpproject.crmbaseservice.error.ClientCreateException;
+import mvpproject.crmbaseservice.error.UserNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+
+import static mvpproject.crmbaseservice.error.exception.CustomException.*;
 
 @Service
 @RequiredArgsConstructor
@@ -26,11 +29,10 @@ public class ClientService {
                 || client.getClientName().isEmpty()
                 || client.getPayerAccountNumber().isEmpty()
                 || client.getBankDetails().isEmpty()) {
-            throw new ClientCreateException(String.valueOf(CustomExceptionText.ПОЛЯ_ЗАПРОСА_НЕ_ДОЛЖНЫ_БЫТЬ_ПУСТЫМИ));
+            throw new ClientCreateException(EMPTY_REQUEST_FIELD.toString());
         } else if (checkingTheUniquenessOfBankAccount(client)) {
-            throw new ClientCreateException(String.valueOf(CustomExceptionText.ТАКОЙ_КЛИЕНТ_УЖЕ_СУЩЕСТВУЕТ));
+            throw new ClientCreateException(NOT_A_UNIQUE_BANK_ACCOUNT.toString());
         }
-
         ClientEntity newUser = clientConverter.convertClientEntityFromDto(client);
         return Optional.of(clientConverter.convertFromClientEntityToDto(clientRepository.save(newUser)));
     }
@@ -42,13 +44,14 @@ public class ClientService {
                 .toList();
     }
 
-    public Optional<ClientDTO> getById(Long id) throws ClientCreateException {
-        if (id == null) {
-            throw new ClientCreateException(String.valueOf(CustomExceptionText.ID_НЕ_МОЖЕТ_БЫТЬ_ПУСТЫМ));
-        }
+    public Optional<ClientDTO> getById(Long id) throws ClientCreateException{
+//        if (id == 0) {
+////        if (id == 0 || id.equals(null) || Character.getType(Math.toIntExact(id)) != Character.DECIMAL_DIGIT_NUMBER) {
+//            throw new ClientCreateException(INVALID_ID_TYPE_ENTERED.toString());
+//        }
         Optional<ClientEntity> user = clientRepository.findById(id);
         return Optional.of(user.map(clientConverter::convertFromClientEntityToDto)
-                .orElseThrow(() -> new ClientCreateException(String.valueOf(CustomExceptionText.КЛИЕНТ_НЕ_НАЙДЕН))));
+                .orElseThrow(UserNotFoundException::new));
     }
 
     @Transactional

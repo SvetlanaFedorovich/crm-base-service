@@ -1,12 +1,12 @@
-package mvpproject.crmbaseservice.service.util;
+package mvpproject.crmbaseservice.error;
 
-public class Response {
+public class ErrorResponse {
     private String message;
 
-    public Response() {
+    public ErrorResponse() {
     }
 
-    public Response(String message) {
+    public ErrorResponse(String message) {
         this.message = message;
     }
 

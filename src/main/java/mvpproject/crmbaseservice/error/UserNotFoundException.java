@@ -1,4 +1,4 @@
-package mvpproject.crmbaseservice.service.util;
+package mvpproject.crmbaseservice.error;
 
 public class UserNotFoundException extends RuntimeException {
 }

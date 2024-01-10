@@ -7,7 +7,7 @@ import io.swagger.v3.oas.annotations.info.Info;
 @OpenAPIDefinition(
         info = @Info(
                 title = "Crm base service",
-                description = "Crm", version = "1.0.0",
+                description = "Crm", version = "1.0.2",
                 contact = @Contact(
                         name = "Komikov Sergey",
                         email = "komikovsergey@gmail.com"

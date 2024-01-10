@@ -1,4 +1,4 @@
-package mvpproject.crmbaseservice.service.util;
+package mvpproject.crmbaseservice.error;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class DefaultAdvice {
 
     @ExceptionHandler(ClientCreateException.class)
-    public ResponseEntity<Response> handleException(ClientCreateException cce) {
-        Response response = new Response(cce.getMessage());
-        return new ResponseEntity<>(response, HttpStatus.OK);
+    public ResponseEntity<ErrorResponse> handleException(ClientCreateException cce) {
+        ErrorResponse errorResponse = new ErrorResponse(cce.getMessage());
+        return new ResponseEntity<>(errorResponse, HttpStatus.OK);
     }
 }
