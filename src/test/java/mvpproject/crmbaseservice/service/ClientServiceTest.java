@@ -1,6 +1,7 @@
 package mvpproject.crmbaseservice.service;
 
 import mvpproject.crmbaseservice.TestData;
+import mvpproject.crmbaseservice.error.ClientCreateException;
 import mvpproject.crmbaseservice.model.dto.ClientDTO;
 import mvpproject.crmbaseservice.model.entity.ClientEntity;
 import mvpproject.crmbaseservice.model.mapper.ClientConverter;
@@ -11,7 +12,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.exceptions.misusing.UnfinishedStubbingException;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 
@@ -60,10 +60,9 @@ class ClientServiceTest extends TestData {
     }
 
     @Test
-    void whenCreateClientWithEmptyFields() {
-        when(clientRepository.save(clientConverter.convertClientEntityFromDto(clientFromRequestWithEmptyFields())));
-        assertThrows(UnfinishedStubbingException.class, () -> {
-            clientService.create(testClient());
+    void whenCreateClientWithEmptyFields() throws ClientCreateException {
+        assertThrows(ClientCreateException.class, () -> {
+            clientService.create(clientFromRequestWithEmptyFields());
         });
     }
 

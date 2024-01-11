@@ -4,16 +4,13 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import mvpproject.crmbaseservice.error.exception.CustomException;
+import mvpproject.crmbaseservice.error.ClientCreateException;
 import mvpproject.crmbaseservice.model.dto.ClientDTO;
 import mvpproject.crmbaseservice.service.ClientService;
-import mvpproject.crmbaseservice.error.ClientCreateException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
-import static mvpproject.crmbaseservice.error.exception.CustomException.CLIENT_NOT_FOUND;
 
 @Tag(name = "Client controller", description = "Содержит эндпойнты для работы с клиентами")
 @RestController
@@ -31,7 +28,7 @@ public class ClientController {
              @RequestBody ClientDTO client) throws ClientCreateException {
         return clientService.create(client)
                 .map(ResponseEntity::ok)
-                .orElseThrow(()->new ClientCreateException());
+                .orElseThrow(() -> new ClientCreateException());
     }
 
     @Operation(summary = "Получить список всех клиентов",

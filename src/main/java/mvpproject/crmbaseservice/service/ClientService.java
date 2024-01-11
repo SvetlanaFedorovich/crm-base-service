@@ -1,20 +1,20 @@
 package mvpproject.crmbaseservice.service;
 
 import lombok.RequiredArgsConstructor;
-import mvpproject.crmbaseservice.error.exception.CustomException;
+import mvpproject.crmbaseservice.error.ClientCreateException;
+import mvpproject.crmbaseservice.error.UserNotFoundException;
 import mvpproject.crmbaseservice.model.dto.ClientDTO;
 import mvpproject.crmbaseservice.model.entity.ClientEntity;
 import mvpproject.crmbaseservice.model.mapper.ClientConverter;
 import mvpproject.crmbaseservice.repository.ClientRepository;
-import mvpproject.crmbaseservice.error.ClientCreateException;
-import mvpproject.crmbaseservice.error.UserNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
-import static mvpproject.crmbaseservice.error.exception.CustomException.*;
+import static mvpproject.crmbaseservice.error.exception.CustomException.EMPTY_REQUEST_FIELD;
+import static mvpproject.crmbaseservice.error.exception.CustomException.NOT_A_UNIQUE_BANK_ACCOUNT;
 
 @Service
 @RequiredArgsConstructor
@@ -44,11 +44,7 @@ public class ClientService {
                 .toList();
     }
 
-    public Optional<ClientDTO> getById(Long id) throws ClientCreateException{
-//        if (id == 0) {
-////        if (id == 0 || id.equals(null) || Character.getType(Math.toIntExact(id)) != Character.DECIMAL_DIGIT_NUMBER) {
-//            throw new ClientCreateException(INVALID_ID_TYPE_ENTERED.toString());
-//        }
+    public Optional<ClientDTO> getById(Long id) throws ClientCreateException {
         Optional<ClientEntity> user = clientRepository.findById(id);
         return Optional.of(user.map(clientConverter::convertFromClientEntityToDto)
                 .orElseThrow(UserNotFoundException::new));

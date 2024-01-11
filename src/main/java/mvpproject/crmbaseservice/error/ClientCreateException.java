@@ -2,13 +2,12 @@ package mvpproject.crmbaseservice.error;
 
 import lombok.Getter;
 import lombok.Setter;
-import mvpproject.crmbaseservice.error.exception.CustomException;
 
 @Setter
 @Getter
 public class ClientCreateException extends RuntimeException {
 
-        public ClientCreateException() {
+    public ClientCreateException() {
     }
 
     public ClientCreateException(String message) {
