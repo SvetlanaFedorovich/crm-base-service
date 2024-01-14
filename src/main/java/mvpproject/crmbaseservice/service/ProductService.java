@@ -1,6 +1,7 @@
 package mvpproject.crmbaseservice.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import mvpproject.crmbaseservice.error.UserNotFoundException;
 import mvpproject.crmbaseservice.model.dto.ProductDTO;
 import mvpproject.crmbaseservice.model.entity.ProductEntity;
@@ -12,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ProductService {
@@ -50,5 +52,4 @@ public class ProductService {
         }
         return Optional.empty();
     }
-
 }

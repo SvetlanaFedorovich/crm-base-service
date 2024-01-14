@@ -1,8 +1,10 @@
 package mvpproject.crmbaseservice.error.exception;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
+@Getter
 public enum CustomException {
     EMPTY_REQUEST_FIELD("Передано пустое поле запроса"),
     NOT_A_UNIQUE_BANK_ACCOUNT("Такой банковский счет уже существует!"),
@@ -11,9 +13,4 @@ public enum CustomException {
     INVALID_ID_TYPE_ENTERED("Введён неверный тип id");
 
     private final String message;
-
-    @Override
-    public String toString() {
-        return message;
-    }
 }

@@ -27,7 +27,6 @@ public class TestData {
                 .build();
     }
 
-
     public static ClientEntity ivanClient() {
         return ClientEntity.builder()
                 .clientName("Ivan")

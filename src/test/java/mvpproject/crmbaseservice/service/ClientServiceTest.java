@@ -11,23 +11,26 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-@ExtendWith(MockitoExtension.class)
+@ContextConfiguration(classes = {ClientService.class})
+@ExtendWith(SpringExtension.class)
 class ClientServiceTest extends TestData {
 
-    @Mock
+    @MockBean
     private ClientRepository clientRepository;
-    @Mock
+    @MockBean
     private ClientConverter clientConverter;
     private static final ModelMapper MODEL_MAPPER = new ModelMapper();
     @InjectMocks
@@ -67,9 +70,9 @@ class ClientServiceTest extends TestData {
     }
 
     @Test
-    void whenCreatedInvokedWithClientThenClientIsSaved() {
+    void whenCreatedInvokedWithClientThenClientIsSaved() throws ClientCreateException {
         when(clientRepository.findAll()).thenReturn(List.of(clientConverter.convertClientEntityFromDto(testClient())));
-        lenient().when(clientRepository.save(clientConverter.convertClientEntityFromDto(testClient())))
+        when(clientRepository.save(clientConverter.convertClientEntityFromDto(testClient())))
                 .thenReturn(clientConverter.convertClientEntityFromDto(testClient()));
         List<String> allUserEmail = clientRepository.findAll().stream()
                 .map(ClientEntity::getClientName)
@@ -81,7 +84,6 @@ class ClientServiceTest extends TestData {
     void whenUpdateByIdThenSavedClientUpdate() {
         when(clientRepository.findById(anyLong())).thenReturn(Optional.of(ivanClient()));
         when(clientRepository.save(ivanClient())).thenReturn(ivanClient());
-
         clientService.update(anyLong(), clientConverter.convertFromClientEntityToDto(ivanClient()));
         Assertions.assertThat(ivanClient().getClientName()).contains(ivanClient().getClientName());
     }

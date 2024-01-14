@@ -47,7 +47,6 @@ public class ProductServiceTest extends TestData {
         verify(productRepository).findById(anyLong());
     }
 
-
     @Test
     void whenGetAllInvokedThenAllTheClientsAreReturned() {
         when(productRepository.findAll()).thenReturn(List.of(productTwo(), productOne()));

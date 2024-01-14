@@ -1,6 +1,7 @@
 package mvpproject.crmbaseservice.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import mvpproject.crmbaseservice.error.ClientCreateException;
 import mvpproject.crmbaseservice.error.UserNotFoundException;
 import mvpproject.crmbaseservice.model.dto.ClientDTO;
@@ -16,6 +17,7 @@ import java.util.Optional;
 import static mvpproject.crmbaseservice.error.exception.CustomException.EMPTY_REQUEST_FIELD;
 import static mvpproject.crmbaseservice.error.exception.CustomException.NOT_A_UNIQUE_BANK_ACCOUNT;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ClientService {
@@ -29,9 +31,9 @@ public class ClientService {
                 || client.getClientName().isEmpty()
                 || client.getPayerAccountNumber().isEmpty()
                 || client.getBankDetails().isEmpty()) {
-            throw new ClientCreateException(EMPTY_REQUEST_FIELD.toString());
+            throw new ClientCreateException(EMPTY_REQUEST_FIELD.getMessage());
         } else if (checkingTheUniquenessOfBankAccount(client)) {
-            throw new ClientCreateException(NOT_A_UNIQUE_BANK_ACCOUNT.toString());
+            throw new ClientCreateException(NOT_A_UNIQUE_BANK_ACCOUNT.getMessage());
         }
         ClientEntity newUser = clientConverter.convertClientEntityFromDto(client);
         return Optional.of(clientConverter.convertFromClientEntityToDto(clientRepository.save(newUser)));
@@ -62,13 +64,10 @@ public class ClientService {
     }
 
     public boolean checkingTheUniquenessOfBankAccount(ClientDTO clientDto) {
-        boolean isSuchAnAccountAlreadyExist = false;
-        List<ClientDTO> allClients = getAll();
-        for (ClientDTO clients : allClients) {
-            if (clients.getPayerAccountNumber().equals(clientDto.getPayerAccountNumber())) {
-                isSuchAnAccountAlreadyExist = true;
-            }
-        }
-        return isSuchAnAccountAlreadyExist;
+        return getAll()
+                .stream()
+                .anyMatch((o -> o
+                        .getPayerAccountNumber()
+                        .equals(clientDto.getPayerAccountNumber())));
     }
 }
