@@ -36,6 +36,7 @@ class ProductControllerTest extends TestData {
 
     @Autowired
     private MockMvc mockMvc;
+
     @Test
     void whenGetAllProductsThenAllTheProductsAreReturned() throws Exception {
         when(productService.getAll()).thenReturn(List.of(testProduct()));

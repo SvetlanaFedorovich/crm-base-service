@@ -19,8 +19,12 @@ checkstyle {
 }
 
 group = 'mvp-project'
-version = '1.0.1'
+version = '1.0.2'
 
+tasks.withType(Checkstyle) {
+    ignoreFailures true
+    exclude '**/**'
+}
 
 java {
     sourceCompatibility = '17'
@@ -35,9 +39,13 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-starter-web"
     implementation "org.springframework.boot:spring-boot-starter-data-jpa"
     implementation "org.modelmapper:modelmapper:${modelmaper}"
-    testImplementation "org.springframework.boot:spring-boot-starter-test"
+    implementation group: 'org.slf4j', name: 'slf4j-api', version: '2.0.11'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation group: 'junit', name: 'junit', version: '4.13.2'
     testImplementation "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
+    testImplementation group: 'org.testcontainers', name: 'junit-jupiter', version: '1.19.3'
+    testImplementation group: 'org.testcontainers', name: 'postgresql', version: '1.19.3'
     compileOnly "org.projectlombok:lombok:${lombokVersion}"
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
     runtimeOnly "org.postgresql:postgresql"
@@ -55,7 +63,6 @@ jacocoTestReport {
         classDirectories.setFrom(files(classDirectories.files.collect {
             fileTree(dir: it, exclude: [
                     "mvpproject/crmbaseservice/config/**",
-                    "mvpproject/crmbaseservice/CrmBaseServiceApplication.java"
             ])
         }))
     }

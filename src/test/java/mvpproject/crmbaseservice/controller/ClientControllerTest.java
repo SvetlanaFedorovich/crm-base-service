@@ -23,6 +23,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @WebMvcTest(ClientController.class)
 class ClientControllerTest extends TestData {
+
+    @Autowired
+    private ClientController clientController;
     @MockBean
     private ClientService clientService;
     @MockBean

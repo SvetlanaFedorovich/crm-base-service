@@ -4,6 +4,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import mvpproject.crmbaseservice.error.ClientCreateException;
 import mvpproject.crmbaseservice.model.dto.ClientDTO;
 import mvpproject.crmbaseservice.service.ClientService;
 import org.springframework.http.ResponseEntity;
@@ -16,12 +18,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Optional;
 
+@Slf4j
+@Tag(name = "Client controller", description = "Содержит эндпойнты для работы с клиентами")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/client")
-@Tag(name = "Client controller", description = "Содержит эндпойнты для работы с клиентами")
 public class ClientController {
 
     private final ClientService clientService;
@@ -29,9 +31,12 @@ public class ClientController {
     @Operation(summary = "Добавить нового клиента",
             description = "Позволяет добавить нового клиента в базу данных")
     @PostMapping("/new")
-    public ResponseEntity<Optional<ClientDTO>> create(@Parameter(description = "Описание нового клиента")
-                                                      @RequestBody ClientDTO client) {
-        return ResponseEntity.ok(clientService.create(client));
+    public ResponseEntity<ClientDTO> create
+            (@Parameter(description = "Описание нового клиента")
+             @RequestBody ClientDTO client) throws ClientCreateException {
+        return clientService.create(client)
+                .map(ResponseEntity::ok)
+                .orElseThrow(() -> new ClientCreateException());
     }
 
     @Operation(summary = "Получить список всех клиентов",
@@ -44,7 +49,7 @@ public class ClientController {
     @Operation(summary = "Получить описание клиента по id",
             description = "Позволяет получить описание конкретного клиента по его id из базы данных")
     @GetMapping("{id}")
-    public ResponseEntity<ClientDTO> getById(@PathVariable Long id) {
+    public ResponseEntity<ClientDTO> getClient(@PathVariable Long id) {
         return clientService.getById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
@@ -58,5 +63,4 @@ public class ClientController {
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
-
 }

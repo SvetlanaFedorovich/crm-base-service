@@ -1,11 +1,13 @@
 package mvpproject.crmbaseservice.model.mapper;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import mvpproject.crmbaseservice.model.dto.ProductDTO;
 import mvpproject.crmbaseservice.model.entity.ProductEntity;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class ProductConverter {

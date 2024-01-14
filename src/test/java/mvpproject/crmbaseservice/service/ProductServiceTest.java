@@ -47,7 +47,6 @@ public class ProductServiceTest extends TestData {
         verify(productRepository).findById(anyLong());
     }
 
-
     @Test
     void whenGetAllInvokedThenAllTheClientsAreReturned() {
         when(productRepository.findAll()).thenReturn(List.of(productTwo(), productOne()));
@@ -79,4 +78,3 @@ public class ProductServiceTest extends TestData {
         Assertions.assertThat(productOne().getProductName()).contains(productOne().getProductName());
     }
 }
-

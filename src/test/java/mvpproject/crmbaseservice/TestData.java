@@ -18,6 +18,15 @@ public class TestData {
                 .build();
     }
 
+    public static ClientDTO clientFromRequestWithEmptyFields() {
+        return ClientDTO.builder()
+                .clientName("")
+                .address("Gomel")
+                .payerAccountNumber("1")
+                .bankDetails("Bank")
+                .build();
+    }
+
     public static ClientEntity ivanClient() {
         return ClientEntity.builder()
                 .clientName("Ivan")
@@ -63,4 +72,3 @@ public class TestData {
                 .build();
     }
 }
-
