@@ -1,11 +1,12 @@
 package mvpproject.crmbaseservice.service;
 
 import lombok.RequiredArgsConstructor;
+import mvpproject.crmbaseservice.erorr.ClientCreateException;
+import mvpproject.crmbaseservice.erorr.UserNotFoundException;
 import mvpproject.crmbaseservice.model.dto.ClientDTO;
 import mvpproject.crmbaseservice.model.entity.ClientEntity;
 import mvpproject.crmbaseservice.model.mapper.ClientConverter;
 import mvpproject.crmbaseservice.repository.ClientRepository;
-import mvpproject.crmbaseservice.service.util.UserNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,7 +21,7 @@ public class ClientService {
     private final ClientConverter clientConverter;
 
     @Transactional
-    public Optional<ClientDTO> create(ClientDTO client) {
+    public Optional<ClientDTO> create(ClientDTO client) throws ClientCreateException {
         ClientEntity newUser = clientConverter.convertClientEntityFromDto(client);
         return Optional.of(clientConverter.convertFromClientEntityToDto(clientRepository.save(newUser)));
     }

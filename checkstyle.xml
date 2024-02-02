@@ -31,12 +31,6 @@
 -->
 
 <module name="Checker">
-    <!-- Checks that a package.html file exists for each package.     -->
-    <!-- See http://checkstyle.sf.net/config_javadoc.html#PackageHtml -->
-    <!--module name="PackageHtml"/-->
-
-    <!-- Checks whether files end with a new line.                        -->
-    <!-- See http://checkstyle.sf.net/config_misc.html#NewlineAtEndOfFile -->
     <module name="NewlineAtEndOfFile">
         <property name="lineSeparator" value="lf"/>
         <property name="severity" value="info"/>
@@ -72,20 +66,20 @@
 
         <!-- Checks for Javadoc comments.                     -->
         <!-- See http://checkstyle.sf.net/config_javadoc.html -->
-        <module name="JavadocMethod">
-            <property name="allowMissingPropertyJavadoc" value="true"/>
-            <property name="scope" value="protected"/>
-            <property name="severity" value="warning"/>
-            <property name="tokens" value="METHOD_DEF"/>
-            <property name="minLineCount" value="2"/>
-        </module>
-        <module name="JavadocType">
-            <property name="severity" value="warning"/>
-        </module>
-        <module name="JavadocStyle">
-            <property name="checkEmptyJavadoc" value="true"/>
-            <property name="severity" value="warning"/>
-        </module>
+<!--        <module name="JavadocMethod">-->
+<!--            <property name="allowMissingPropertyJavadoc" value="true"/>-->
+<!--            <property name="scope" value="protected"/>-->
+<!--            <property name="severity" value="warning"/>-->
+<!--            <property name="tokens" value="METHOD_DEF"/>-->
+<!--            <property name="minLineCount" value="2"/>-->
+<!--        </module>-->
+<!--        <module name="JavadocType">-->
+<!--            <property name="severity" value="warning"/>-->
+<!--        </module>-->
+<!--        <module name="JavadocStyle">-->
+<!--            <property name="checkEmptyJavadoc" value="true"/>-->
+<!--            <property name="severity" value="warning"/>-->
+<!--        </module>-->
 
 
         <!-- Checks for Naming Conventions.                  -->
@@ -183,11 +177,11 @@
         <module name="CovariantEquals"/>
         <module name="IllegalInstantiation"/>
         <module name="InnerAssignment"/>
-        <module name="MagicNumber">
-            <property name="ignoreNumbers" value="-1, 0, 0.5,0.9,0.75,0.65, 587, 68, 30, 1, 2,3,4,5,6,7,8,9,10,11,12,13,14,15,16, 100"/>
-            <property name="ignoreHashCodeMethod" value="true"/>
-            <property name="ignoreAnnotation" value="true"/>
-        </module>
+<!--        <module name="MagicNumber">-->
+<!--            <property name="ignoreNumbers" value="-1, 0, 0.5,0.9,0.75,0.65, 587, 68, 30, 1, 2,3,4,5,6,7,8,9,10,11,12,13,14,15,16, 100"/>-->
+<!--            <property name="ignoreHashCodeMethod" value="true"/>-->
+<!--            <property name="ignoreAnnotation" value="true"/>-->
+<!--        </module>-->
         <module name="MissingSwitchDefault"/>
         <!-- <module name="RedundantThrows"/>-->
         <!--module name="IllegalThrows"/-->

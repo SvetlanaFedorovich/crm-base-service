@@ -1,4 +1,4 @@
-package mvpproject.crmbaseservice.service.util;
+package mvpproject.crmbaseservice.util;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
