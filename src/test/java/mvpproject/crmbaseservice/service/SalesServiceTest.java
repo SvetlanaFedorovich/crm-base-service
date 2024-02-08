@@ -1,14 +1,11 @@
 package mvpproject.crmbaseservice.service;
 
 import jakarta.persistence.EntityNotFoundException;
+import mvpproject.crmbaseservice.builder.SalesEntityBuilder;
 import mvpproject.crmbaseservice.erorr.SalesNotFoundException;
 import mvpproject.crmbaseservice.model.dto.SalesDTO;
-import mvpproject.crmbaseservice.model.entity.ClientEntity;
-import mvpproject.crmbaseservice.model.entity.ProductEntity;
 import mvpproject.crmbaseservice.model.entity.SalesEntity;
 import mvpproject.crmbaseservice.model.mapper.SalesConverter;
-import mvpproject.crmbaseservice.repository.ClientRepository;
-import mvpproject.crmbaseservice.repository.ProductRepository;
 import mvpproject.crmbaseservice.repository.SalesRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,27 +17,13 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-
-import static mvpproject.crmbaseservice.TestData.clientEntity;
-import static mvpproject.crmbaseservice.TestData.createClientEntity;
-import static mvpproject.crmbaseservice.TestData.createProductEntity;
-import static mvpproject.crmbaseservice.TestData.createSalesDto1;
-import static mvpproject.crmbaseservice.TestData.createSalesDto2;
-import static mvpproject.crmbaseservice.TestData.createSalesDto3;
-import static mvpproject.crmbaseservice.TestData.createSalesEntity1;
-import static mvpproject.crmbaseservice.TestData.createSalesEntity2;
-import static mvpproject.crmbaseservice.TestData.createSalesEntity3;
-import static mvpproject.crmbaseservice.TestData.productEntity;
-import static mvpproject.crmbaseservice.TestData.salesDto;
-
-import static mvpproject.crmbaseservice.TestData.salesEntity;
-
+import static mvpproject.crmbaseservice.TestData.buildTestSalesDTO;
+import static mvpproject.crmbaseservice.TestData.buildTestSalesEntity;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -53,79 +36,61 @@ class SalesServiceTest {
     private SalesConverter salesConverter;
 
     @Mock
-    private ProductRepository productRepository;
-
-    @Mock
-    private ClientRepository clientRepository;
+    private SalesEntityBuilder salesEntityBuilder;
 
     @InjectMocks
     private SalesService salesService;
 
     @Test
     void testCreate() {
-        // Arrange
-        SalesDTO salesDto = salesDto();
+        SalesDTO salesDto = buildTestSalesDTO(1L, 1, 1);
+        SalesEntity salesEntity = buildTestSalesEntity(1L, 1, 1);
 
-        ClientEntity clientEntity = clientEntity();
-        ProductEntity productEntity = productEntity();
-        SalesEntity salesEntity = salesEntity();
-
-        when(clientRepository.findById(anyLong())).thenReturn(Optional.of(clientEntity));
-        when(productRepository.findById(anyLong())).thenReturn(Optional.of(productEntity));
+        when(salesEntityBuilder.build(any(SalesDTO.class))).thenReturn(salesEntity);
         when(salesRepository.save(any(SalesEntity.class))).thenReturn(salesEntity);
         when(salesConverter.convertFromSalesEntityToDto(any(SalesEntity.class))).thenReturn(salesDto);
 
-        // Act
         Optional<SalesDTO> result = salesService.create(salesDto);
 
-        // Assert
         assertTrue(result.isPresent());
         assertEquals(salesDto, result.get());
     }
 
     @Test
     void testCreateWhenClientNotFound() {
-        // Arrange
-        SalesDTO salesDto = salesDto();
+        SalesDTO salesDto = buildTestSalesDTO(1L, 1, 1);
 
-        when(clientRepository.findById(anyLong())).thenReturn(Optional.empty());
+        when(salesEntityBuilder.build(any(SalesDTO.class))).thenThrow(new EntityNotFoundException("Client not found"));
 
-        // Act and Assert
-        assertThrows(EntityNotFoundException.class, () -> salesService.create(salesDto));
+        assertThrows(EntityNotFoundException.class, ()->salesService.create(salesDto));
     }
 
     @Test
     void testCreateWhenProductNotFound() {
-        // Arrange
-        SalesDTO salesDto = salesDto();
+        SalesDTO salesDto = buildTestSalesDTO(1L, 1, 1);
 
-        when(clientRepository.findById(anyLong())).thenReturn(Optional.of(new ClientEntity()));
-        when(productRepository.findById(anyLong())).thenReturn(Optional.empty());
+        when(salesEntityBuilder.build(any(SalesDTO.class))).thenThrow(new EntityNotFoundException("Product not found"));
 
-        // Act and Assert
-        assertThrows(EntityNotFoundException.class, () -> salesService.create(salesDto));
+        assertThrows(EntityNotFoundException.class, ()->salesService.create(salesDto));
     }
 
     @Test
     void testGetAll() {
-        // Arrange
-        SalesEntity salesEntity1 = createSalesEntity1();
-        SalesEntity salesEntity2 = createSalesEntity2();
-        SalesEntity salesEntity3 = createSalesEntity3();
+        SalesEntity salesEntity1 = buildTestSalesEntity(1L, 1, 1);
+        SalesEntity salesEntity2 = buildTestSalesEntity(2L, 2, 15);
+        SalesEntity salesEntity3 = buildTestSalesEntity(3L, 3, 100);
 
-        SalesDTO salesDto1 = createSalesDto1();
-        SalesDTO salesDto2 = createSalesDto2();
-        SalesDTO salesDto3 = createSalesDto3();
+        SalesDTO salesDto1 = buildTestSalesDTO(1L, 1, 1);
+        SalesDTO salesDto2 = buildTestSalesDTO(2L, 2, 15);
+        SalesDTO salesDto3 = buildTestSalesDTO(3L, 3, 100);
 
         when(salesRepository.findAll()).thenReturn(List.of(salesEntity1, salesEntity2, salesEntity3));
         when(salesConverter.convertFromSalesEntityToDto(salesEntity1)).thenReturn(salesDto1);
         when(salesConverter.convertFromSalesEntityToDto(salesEntity2)).thenReturn(salesDto2);
         when(salesConverter.convertFromSalesEntityToDto(salesEntity3)).thenReturn(salesDto3);
 
-        // Act
         List<SalesDTO> result = salesService.getAll();
 
-        // Assert
         assertEquals(3, result.size());
         assertEquals(salesDto1, result.get(0));
         assertEquals(salesDto2, result.get(1));
@@ -134,90 +99,68 @@ class SalesServiceTest {
 
     @Test
     void testGetById() {
-        // Arrange
-        Long id = 1L;
+        SalesEntity salesEntity = buildTestSalesEntity(1L, 1, 1);
+        SalesDTO salesDto = buildTestSalesDTO(1L, 1, 1);
 
-        SalesEntity salesEntity = createSalesEntity1();
-        SalesDTO salesDto = createSalesDto1();
-
-        when(salesRepository.findById(id)).thenReturn(Optional.of(salesEntity));
+        when(salesRepository.findById(1L)).thenReturn(Optional.of(salesEntity));
         when(salesConverter.convertFromSalesEntityToDto(salesEntity)).thenReturn(salesDto);
 
-        // Act
-        Optional<SalesDTO> result = salesService.getById(id);
+        Optional<SalesDTO> result = salesService.getById(1L);
 
-        // Assert
         assertTrue(result.isPresent());
         assertEquals(salesDto, result.get());
     }
 
     @Test
     void testGetByIdNotFound() {
-        // Arrange
-        Long id = 1L;
+        when(salesRepository.findById(1L)).thenReturn(Optional.empty());
 
-        when(salesRepository.findById(id)).thenReturn(Optional.empty());
-
-        // Act and Assert
-        assertThrows(SalesNotFoundException.class, () -> salesService.getById(id));
+        assertThrows(SalesNotFoundException.class, ()->salesService.getById(1L));
     }
-
 
     @Test
     void testUpdate() {
-        // Arrange
-        Long id = 1L;
+        SalesEntity salesEntity = buildTestSalesEntity(1L, 1, 1);
+        SalesDTO salesDto = buildTestSalesDTO(1L, 1, 1);
 
-        SalesEntity salesEntity = createSalesEntity1();
-        SalesDTO salesDto = createSalesDto1();
-        ProductEntity productEntity = createProductEntity();
-        ClientEntity clientEntity = createClientEntity();
-
-        when(salesRepository.findById(id)).thenReturn(Optional.of(salesEntity));
-        when(productRepository.findById(salesDto.getProductId())).thenReturn(Optional.of(productEntity));
-        when(clientRepository.findById(salesDto.getClientId())).thenReturn(Optional.of(clientEntity));
+        when(salesEntityBuilder.build(any(SalesDTO.class))).thenReturn(salesEntity);
+        when(salesRepository.findById(1L)).thenReturn(Optional.of(salesEntity));
         when(salesConverter.convertFromSalesEntityToDto(salesEntity)).thenReturn(salesDto);
         when(salesRepository.save(salesEntity)).thenReturn(salesEntity);
 
-        // Act
-        Optional<SalesDTO> result = salesService.update(id, salesDto);
+        Optional<SalesDTO> result = salesService.updateSales(1L, salesDto);
 
-        // Assert
         assertTrue(result.isPresent());
         assertEquals(salesDto, result.get());
+
+        verify(salesEntityBuilder).build(salesDto);
     }
 
     @Test
-    void testUpdateNotFound() {
-        // Arrange
-        Long id = 1L;
-        SalesDTO salesDto = createSalesDto1();
+    public void testUpdateSalesWhenSaleNotFound() {
+        SalesDTO update = new SalesDTO();
+        when(salesRepository.findById(1L)).thenReturn(Optional.empty());
 
-        when(salesRepository.findById(id)).thenReturn(Optional.empty());
+        Optional<SalesDTO> result = salesService.updateSales(1L, update);
 
-        // Act
-        Optional<SalesDTO> result = salesService.update(id, salesDto);
-
-        // Assert
-        assertFalse(result.isPresent());
+        assertTrue(result.isPresent());
+        assertEquals(new SalesDTO(), result.get());
     }
 
     @Test
     void testGetSalesByDateRangeForInvalidFilter() {
-        // Act and Assert
-        assertThrows(IllegalArgumentException.class, () -> salesService.getSalesByDateRange("INVALID"));
+        assertThrows(IllegalArgumentException.class, ()->salesService.getSalesByDateRange("INVALID"));
     }
 
     @Test
     void testGetSalesByDateRangeForWeek() {
-        // Arrange
-        SalesEntity salesEntity1 = createSalesEntity1();
-        SalesEntity salesEntity2 = createSalesEntity2();
-        SalesEntity salesEntity3 = createSalesEntity3();
+        SalesEntity salesEntity1 = buildTestSalesEntity(1L, 1, 1);
+        SalesEntity salesEntity2 = buildTestSalesEntity(2L, 2, 15);
+        SalesEntity salesEntity3 = buildTestSalesEntity(3L, 3, 100);
 
-        SalesDTO salesDto1 = createSalesDto1();
+        SalesDTO salesDto1 = buildTestSalesDTO(1L, 1, 1);
 
-        when(salesRepository.findBySalesDateAfter(any(LocalDate.class))).thenAnswer(invocation -> {
+        when(salesRepository.findBySalesDateAfter(any(LocalDate.class))).thenAnswer(invocation-> {
             LocalDate date = invocation.getArgument(0);
             if (date.isAfter(salesEntity1.getSalesDate())) {
                 return List.of();
@@ -232,10 +175,8 @@ class SalesServiceTest {
 
         when(salesConverter.convertFromSalesEntityToDto(salesEntity1)).thenReturn(salesDto1);
 
-        // Act
         List<Optional<SalesDTO>> result = salesService.getSalesByDateRange("week");
 
-        // Assert
         assertEquals(1, result.size());
         assertTrue(result.get(0).isPresent());
 
@@ -244,15 +185,14 @@ class SalesServiceTest {
 
     @Test
     void testGetSalesByDateRangeForMonth() {
-        // Arrange
-        SalesEntity salesEntity1 = createSalesEntity1();
-        SalesEntity salesEntity2 = createSalesEntity2();
-        SalesEntity salesEntity3 = createSalesEntity3();
+        SalesEntity salesEntity1 = buildTestSalesEntity(1L, 1, 1);
+        SalesEntity salesEntity2 = buildTestSalesEntity(2L, 2, 15);
+        SalesEntity salesEntity3 = buildTestSalesEntity(3L, 3, 100);
 
-        SalesDTO salesDto1 = createSalesDto1();
-        SalesDTO salesDto2 = createSalesDto2();
+        SalesDTO salesDto1 = buildTestSalesDTO(1L, 1, 1);
+        SalesDTO salesDto2 = buildTestSalesDTO(2L, 2, 15);
 
-        when(salesRepository.findBySalesDateAfter(any(LocalDate.class))).thenAnswer(invocation -> {
+        when(salesRepository.findBySalesDateAfter(any(LocalDate.class))).thenAnswer(invocation-> {
             LocalDate date = invocation.getArgument(0);
             if (date.isAfter(salesEntity1.getSalesDate())) {
                 return List.of();
@@ -268,10 +208,8 @@ class SalesServiceTest {
         when(salesConverter.convertFromSalesEntityToDto(salesEntity1)).thenReturn(salesDto1);
         when(salesConverter.convertFromSalesEntityToDto(salesEntity2)).thenReturn(salesDto2);
 
-        // Act
         List<Optional<SalesDTO>> result = salesService.getSalesByDateRange("month");
 
-        // Assert
         assertEquals(2, result.size());
         assertTrue(result.get(0).isPresent());
         assertTrue(result.get(1).isPresent());
@@ -282,16 +220,15 @@ class SalesServiceTest {
 
     @Test
     void testGetSalesByDateRangeForYear() {
-        // Arrange
-        SalesEntity salesEntity1 = createSalesEntity1();
-        SalesEntity salesEntity2 = createSalesEntity2();
-        SalesEntity salesEntity3 = createSalesEntity3();
+        SalesEntity salesEntity1 = buildTestSalesEntity(1L, 1, 1);
+        SalesEntity salesEntity2 = buildTestSalesEntity(2L, 2, 15);
+        SalesEntity salesEntity3 = buildTestSalesEntity(3L, 3, 100);
 
-        SalesDTO salesDto1 = createSalesDto1();
-        SalesDTO salesDto2 = createSalesDto2();
-        SalesDTO salesDto3 = createSalesDto3();
+        SalesDTO salesDto1 = buildTestSalesDTO(1L, 1, 1);
+        SalesDTO salesDto2 = buildTestSalesDTO(2L, 2, 15);
+        SalesDTO salesDto3 = buildTestSalesDTO(3L, 3, 100);
 
-        when(salesRepository.findBySalesDateAfter(any(LocalDate.class))).thenAnswer(invocation -> {
+        when(salesRepository.findBySalesDateAfter(any(LocalDate.class))).thenAnswer(invocation-> {
             LocalDate date = invocation.getArgument(0);
             if (date.isAfter(salesEntity1.getSalesDate())) {
                 return List.of();
@@ -308,10 +245,8 @@ class SalesServiceTest {
         when(salesConverter.convertFromSalesEntityToDto(salesEntity2)).thenReturn(salesDto2);
         when(salesConverter.convertFromSalesEntityToDto(salesEntity3)).thenReturn(salesDto3);
 
-        // Act
         List<Optional<SalesDTO>> result = salesService.getSalesByDateRange("year");
 
-        // Assert
         assertEquals(3, result.size());
         assertTrue(result.get(0).isPresent());
         assertTrue(result.get(1).isPresent());

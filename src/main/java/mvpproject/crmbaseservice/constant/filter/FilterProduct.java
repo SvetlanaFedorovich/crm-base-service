@@ -6,7 +6,7 @@ public enum FilterProduct {
     MONTH,
     WEEK,
     YEAR;
-    public static FilterProduct getFilterProduct(String filter) {
+    public static FilterProduct getFilterProduct(String filter) { //убрать из Enum! СОздать пакет validator
         return Arrays.stream(FilterProduct.values())
                 .filter(fp -> fp.name().equalsIgnoreCase(filter))
                 .findFirst()

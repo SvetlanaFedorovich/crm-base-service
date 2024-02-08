@@ -1,16 +1,13 @@
 package mvpproject.crmbaseservice.service;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import mvpproject.crmbaseservice.builder.SalesEntityBuilder;
+import mvpproject.crmbaseservice.constant.errorMessage.ErrorMessage;
 import mvpproject.crmbaseservice.constant.filter.FilterProduct;
 import mvpproject.crmbaseservice.erorr.SalesNotFoundException;
 import mvpproject.crmbaseservice.model.dto.SalesDTO;
-import mvpproject.crmbaseservice.model.entity.ClientEntity;
-import mvpproject.crmbaseservice.model.entity.ProductEntity;
 import mvpproject.crmbaseservice.model.entity.SalesEntity;
 import mvpproject.crmbaseservice.model.mapper.SalesConverter;
-import mvpproject.crmbaseservice.repository.ClientRepository;
-import mvpproject.crmbaseservice.repository.ProductRepository;
 import mvpproject.crmbaseservice.repository.SalesRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,23 +24,12 @@ public class SalesService {
 
     private final SalesRepository salesRepository;
     private final SalesConverter salesConverter;
-    private final ProductRepository productRepository;
-    private final ClientRepository clientRepository;
+
+    private final SalesEntityBuilder salesEntityBuilder;
 
     @Transactional
     public Optional<SalesDTO> create(SalesDTO salesDto) {
-
-        ClientEntity clientEntity = clientRepository.findById(salesDto.getClientId())
-                .orElseThrow(() -> new EntityNotFoundException("Client not found"));
-        ProductEntity productEntity = productRepository.findById(salesDto.getProductId())
-                .orElseThrow(() -> new EntityNotFoundException("Product not found"));
-
-        SalesEntity salesEntity = new SalesEntity();
-        salesEntity.setClient(clientEntity);
-        salesEntity.setProduct(productEntity);
-        salesEntity.setQuantity(salesDto.getQuantity());
-        salesEntity.setSalesDate(salesDto.getSalesDate());
-
+        SalesEntity salesEntity = salesEntityBuilder.build(salesDto);
         SalesEntity savedSalesEntity = salesRepository.save(salesEntity);
         return Optional.ofNullable(salesConverter.convertFromSalesEntityToDto(savedSalesEntity));
     }
@@ -59,33 +45,28 @@ public class SalesService {
     public Optional<SalesDTO> getById(Long id) {
         Optional<SalesEntity> sales = salesRepository.findById(id);
         if (sales.isEmpty()) {
-            throw new SalesNotFoundException("Продажа с id " + id + " не найдена!");
+            throw new SalesNotFoundException(ErrorMessage.SALES_NOT_FOUND.getMessage(id));
         }
         return sales.map(salesConverter::convertFromSalesEntityToDto);
     }
 
 
     @Transactional
-    public Optional<SalesDTO> update(Long id, SalesDTO update) {
+    public Optional<SalesDTO> updateSales(Long id, SalesDTO update) {
         Optional<SalesEntity> existSales = salesRepository.findById(id);
         if (existSales.isPresent()) {
             SalesEntity sales = existSales.get();
 
-            ClientEntity client = clientRepository.findById(update.getClientId())
-                    .orElseThrow(()-> new EntityNotFoundException("Client with id: " + update.getClientId() + " not foud"));
+            SalesEntity newSales  = salesEntityBuilder.build(update);
 
-            ProductEntity newProduct = productRepository.findById(update.getProductId())
-                    .orElseThrow(() -> new EntityNotFoundException("Product with id: " + update.getProductId() + " not found"));
-
-            sales.setProduct(newProduct);
-            sales.setClient(client);
-
+            sales.setProduct(newSales.getProduct());
+            sales.setClient(newSales.getClient());
             sales.setQuantity(update.getQuantity());
             sales.setSalesDate(update.getSalesDate());
 
             return Optional.of(salesConverter.convertFromSalesEntityToDto(salesRepository.save(sales)));
         }
-        return Optional.empty();
+        return Optional.ofNullable((SalesDTO.builder().build()));
     }
 
     public List<Optional<SalesDTO>> getSalesByDateRange(String filter) {

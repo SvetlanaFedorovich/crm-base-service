@@ -27,16 +27,12 @@ public class ClientService {
     }
 
     public List<ClientDTO> getAll() {
-        return clientRepository.findAll()
-                .stream()
-                .map(clientConverter::convertFromClientEntityToDto)
-                .toList();
+        return clientRepository.findAll().stream().map(clientConverter::convertFromClientEntityToDto).toList();
     }
 
     public Optional<ClientDTO> getById(Long id) {
         Optional<ClientEntity> user = clientRepository.findById(id);
-        return Optional.of(user.map(clientConverter::convertFromClientEntityToDto)
-                .orElseThrow(UserNotFoundException::new));
+        return Optional.of(user.map(clientConverter::convertFromClientEntityToDto).orElseThrow(UserNotFoundException::new));
     }
 
     @Transactional
@@ -49,4 +45,5 @@ public class ClientService {
         }
         return Optional.empty();
     }
+
 }
