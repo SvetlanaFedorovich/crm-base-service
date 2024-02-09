@@ -3,90 +3,19 @@
         "-//Puppy Crawl//DTD Check Configuration 1.3//EN"
         "http://www.puppycrawl.com/dtds/configuration_1_3.dtd">
 
-<!--
-
-  Checkstyle configuration that checks the sun coding conventions from:
-
-    - the Java Language Specification at
-      http://java.sun.com/docs/books/jls/second_edition/html/index.html
-
-    - the Sun Code Conventions at http://java.sun.com/docs/codeconv/
-
-    - the Javadoc guidelines at
-      http://java.sun.com/j2se/javadoc/writingdoccomments/index.html
-
-    - the JDK Api documentation http://java.sun.com/j2se/docs/api/index.html
-
-    - some best practices
-
-  Checkstyle is very configurable. Be sure to read the documentation at
-  http://checkstyle.sf.net (or in your downloaded distribution).
-
-  Most Checks are configurable, be sure to consult the documentation.
-
-  To completely disable a check, just comment it out or delete it from the file.
-
-  Finally, it is worth reading the documentation.
-
--->
-
 <module name="Checker">
-    <!-- Checks that a package.html file exists for each package.     -->
-    <!-- See http://checkstyle.sf.net/config_javadoc.html#PackageHtml -->
-    <!--module name="PackageHtml"/-->
-
-    <!-- Checks whether files end with a new line.                        -->
-    <!-- See http://checkstyle.sf.net/config_misc.html#NewlineAtEndOfFile -->
     <module name="NewlineAtEndOfFile">
         <property name="lineSeparator" value="lf"/>
         <property name="severity" value="info"/>
     </module>
-
-
-    <!-- Checks that property files contain the same keys.         -->
-    <!-- See http://checkstyle.sf.net/config_misc.html#Translation -->
     <module name="Translation"/>
-
-
-    <!-- Checks for Size Violations.                    -->
-    <!-- See http://checkstyle.sf.net/config_sizes.html -->
     <module name="FileLength"/>
-
 
     <!-- Checks that there are no tab characters ('\t') in the source code. -->
     <!-- See http://checkstyle.sourceforge.net/config_whitespace.html#FileTabCharacter -->
     <module name="FileTabCharacter"/>
-
-
-    <!-- Checks for Headers                                -->
-    <!-- See http://checkstyle.sf.net/config_header.html   -->
-    <!--
-    <module name="Header">
-        <property name="headerFile" value="${checkstyle.header.file}"/>
-        <property name="fileExtensions" value="java"/>
-    </module>
-    -->
-
     <module name="TreeWalker">
         <module name="FileContentsHolder"/>
-
-        <!-- Checks for Javadoc comments.                     -->
-        <!-- See http://checkstyle.sf.net/config_javadoc.html -->
-        <module name="JavadocMethod">
-            <property name="allowMissingPropertyJavadoc" value="true"/>
-            <property name="scope" value="protected"/>
-            <property name="severity" value="warning"/>
-            <property name="tokens" value="METHOD_DEF"/>
-            <property name="minLineCount" value="2"/>
-        </module>
-        <module name="JavadocType">
-            <property name="severity" value="warning"/>
-        </module>
-        <module name="JavadocStyle">
-            <property name="checkEmptyJavadoc" value="true"/>
-            <property name="severity" value="warning"/>
-        </module>
-
 
         <!-- Checks for Naming Conventions.                  -->
         <!-- See http://checkstyle.sf.net/config_naming.html -->
@@ -99,7 +28,6 @@
         <module name="ParameterName"/>
         <module name="StaticVariableName"/>
         <module name="TypeName"/>
-
 
         <!-- Checks for imports                              -->
         <!-- See http://checkstyle.sf.net/config_import.html -->
@@ -115,7 +43,6 @@
         </module>
         <module name="MethodLength"/>
         <module name="ParameterNumber"/>
-
 
         <!-- Checks for whitespace                               -->
         <!-- See http://checkstyle.sf.net/config_whitespace.html -->
@@ -154,12 +81,10 @@
             <property name="allowEmptyMethods" value="true"/>
         </module>
 
-
         <!-- Modifier Checks                                    -->
         <!-- See http://checkstyle.sf.net/config_modifiers.html -->
         <module name="ModifierOrder"/>
         <module name="RedundantModifier"/>
-
 
         <!-- Checks for blocks. You know, those {}'s         -->
         <!-- See http://checkstyle.sf.net/config_blocks.html -->
@@ -173,7 +98,6 @@
         <module name="NeedBraces"/>
         <module name="RightCurly"/>
 
-
         <!-- Checks for common coding problems               -->
         <!-- See http://checkstyle.sf.net/config_coding.html -->
         <!-- MY FAVORITE -->
@@ -183,27 +107,17 @@
         <module name="CovariantEquals"/>
         <module name="IllegalInstantiation"/>
         <module name="InnerAssignment"/>
-        <module name="MagicNumber">
-            <property name="ignoreNumbers" value="-1, 0, 0.5,0.9,0.75,0.65, 587, 68, 30, 1, 2,3,4,5,6,7,8,9,10,11,12,13,14,15,16, 100"/>
-            <property name="ignoreHashCodeMethod" value="true"/>
-            <property name="ignoreAnnotation" value="true"/>
-        </module>
         <module name="MissingSwitchDefault"/>
-        <!-- <module name="RedundantThrows"/>-->
-        <!--module name="IllegalThrows"/-->
         <module name="SimplifyBooleanExpression"/>
         <module name="SimplifyBooleanReturn"/>
-        <!--module name="ParameterAssignment"/-->
         <module name="MultipleVariableDeclarations"/>
         <module name="NoFinalizer"/>
 
         <!-- Checks for class design                         -->
         <!-- See http://checkstyle.sf.net/config_design.html -->
         <module name="FinalClass"/>
-        <!--<module name="HideUtilityClassConstructor"/> disabled because of @UtilityClass (Project Lombok)-->
         <module name="InterfaceIsType"/>
         <module name="VisibilityModifier"/>
-
 
         <!-- Miscellaneous other checks.                   -->
         <!-- See http://checkstyle.sf.net/config_misc.html -->
@@ -212,7 +126,6 @@
             <property name="severity" value="warning"/>
         </module>
         <module name="UpperEll"/>
-
     </module>
 
     <!-- Suppresses validation between CHECKSTYLE:ON and CHECKSTYLE:OFF -->

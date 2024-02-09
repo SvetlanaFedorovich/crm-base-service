@@ -5,15 +5,17 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ClientDTO {
-
+public class SalesDTO {
     private Long id;
-    private String clientName;
-    private String address;
-    private String payerAccountNumber;
-    private String bankDetails;
+    private Long clientId;
+    private Long productId;
+    private Integer quantity;
+    private LocalDate salesDate;
+
 }

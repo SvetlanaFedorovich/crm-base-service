@@ -5,7 +5,7 @@ import mvpproject.crmbaseservice.model.dto.ProductDTO;
 import mvpproject.crmbaseservice.model.entity.ProductEntity;
 import mvpproject.crmbaseservice.model.mapper.ProductConverter;
 import mvpproject.crmbaseservice.repository.ProductRepository;
-import mvpproject.crmbaseservice.service.util.UserNotFoundException;
+import mvpproject.crmbaseservice.erorr.UserNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
