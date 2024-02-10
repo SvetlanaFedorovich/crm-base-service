@@ -1,6 +1,10 @@
 name: GitHub Actions Demo
 run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
-on: [ push ]
+on:
+  push:
+  pull_request:
+    branches:
+      - dev
 jobs:
   Explore-GitHub-Actions:
     runs-on: ubuntu-latest
@@ -28,11 +32,4 @@ jobs:
         run: ./gradlew test
       - name: Build Docker image
         run: docker build -t crm-base-service .
-#      - name: Deploy to Kubernetes
-#        env:
-#          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-#        run: |
-#          export POSTGRES_PASSWORD
-#          kubectl apply -f k8s/app-deployment.yaml
-
       - run: echo "🍏 This job's status is ${{ job.status }}."
