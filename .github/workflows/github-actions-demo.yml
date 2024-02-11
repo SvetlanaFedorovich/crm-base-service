@@ -33,5 +33,5 @@ jobs:
       - name: Build Docker image
         run: docker build -t crm-base-service .
       - name: Deploy to Kubernetes
-        run: kubectl apply -f k8s/app-deployment.yaml
+        run: kubectl apply -f k8s/app-deployment.yaml --validate=false
       - run: echo "🍏 This job's status is ${{ job.status }}."
