@@ -61,6 +61,7 @@ public class SalesController {
 
     @PutMapping("{id}")
     public ResponseEntity<SalesDTO> update(@PathVariable Long id, @RequestBody SalesDTO updateSales) {
+
         return salesService.updateSales(id, updateSales).map(result-> {
                     if (result.getId() == null) {
                         throw new SalesNotFoundException(ErrorMessage.SALES_NOT_FOUND.getMessage(id));

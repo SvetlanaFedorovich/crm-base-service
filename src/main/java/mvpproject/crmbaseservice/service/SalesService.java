@@ -9,6 +9,7 @@ import mvpproject.crmbaseservice.model.dto.SalesDTO;
 import mvpproject.crmbaseservice.model.entity.SalesEntity;
 import mvpproject.crmbaseservice.model.mapper.SalesConverter;
 import mvpproject.crmbaseservice.repository.SalesRepository;
+import mvpproject.crmbaseservice.kafka.util.SendMessage;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,8 +25,8 @@ public class SalesService {
 
     private final SalesRepository salesRepository;
     private final SalesConverter salesConverter;
-
     private final SalesEntityBuilder salesEntityBuilder;
+    private final SendMessage sendMessage;
 
     @Transactional
     public Optional<SalesDTO> create(SalesDTO salesDto) {
@@ -57,14 +58,19 @@ public class SalesService {
         if (existSales.isPresent()) {
             SalesEntity sales = existSales.get();
 
-            SalesEntity newSales  = salesEntityBuilder.build(update);
+            SalesEntity newSales = salesEntityBuilder.build(update);
 
             sales.setProduct(newSales.getProduct());
             sales.setClient(newSales.getClient());
-            sales.setQuantity(update.getQuantity());
-            sales.setSalesDate(update.getSalesDate());
+            sales.setQuantity(newSales.getQuantity());
+            sales.setSalesDate(newSales.getSalesDate());
 
-            return Optional.of(salesConverter.convertFromSalesEntityToDto(salesRepository.save(sales)));
+            SalesEntity savedSales = salesRepository.save(sales);
+            Optional<SalesDTO> savedSalesDto = Optional.of(salesConverter.convertFromSalesEntityToDto(savedSales));
+
+            sendMessage.sendMessage(id);
+
+            return savedSalesDto;
         }
         return Optional.ofNullable((SalesDTO.builder().build()));
     }

@@ -7,6 +7,7 @@ import mvpproject.crmbaseservice.model.dto.SalesDTO;
 import mvpproject.crmbaseservice.model.entity.SalesEntity;
 import mvpproject.crmbaseservice.model.mapper.SalesConverter;
 import mvpproject.crmbaseservice.repository.SalesRepository;
+import mvpproject.crmbaseservice.kafka.util.SendMessage;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -38,6 +39,8 @@ class SalesServiceTest {
     @Mock
     private SalesEntityBuilder salesEntityBuilder;
 
+    @Mock
+    private SendMessage sendMessage;
     @InjectMocks
     private SalesService salesService;
 
@@ -120,20 +123,22 @@ class SalesServiceTest {
 
     @Test
     void testUpdate() {
-        SalesEntity salesEntity = buildTestSalesEntity(1L, 1, 1);
-        SalesDTO salesDto = buildTestSalesDTO(1L, 1, 1);
+        SalesEntity existingSalesEntity = buildTestSalesEntity(1L, 1, 1);
+        SalesDTO updatedSalesDto = buildTestSalesDTO(1L, 1, 1);
 
-        when(salesEntityBuilder.build(any(SalesDTO.class))).thenReturn(salesEntity);
-        when(salesRepository.findById(1L)).thenReturn(Optional.of(salesEntity));
-        when(salesConverter.convertFromSalesEntityToDto(salesEntity)).thenReturn(salesDto);
-        when(salesRepository.save(salesEntity)).thenReturn(salesEntity);
+        when(salesRepository.findById(1L)).thenReturn(Optional.of(existingSalesEntity));
+        when(salesEntityBuilder.build(updatedSalesDto)).thenReturn(existingSalesEntity);
+        when(salesConverter.convertFromSalesEntityToDto(existingSalesEntity)).thenReturn(updatedSalesDto);
+        when(salesRepository.save(existingSalesEntity)).thenReturn(existingSalesEntity);
 
-        Optional<SalesDTO> result = salesService.updateSales(1L, salesDto);
+        Optional<SalesDTO> result = salesService.updateSales(1L, updatedSalesDto);
 
         assertTrue(result.isPresent());
-        assertEquals(salesDto, result.get());
+        assertEquals(updatedSalesDto, result.get());
 
-        verify(salesEntityBuilder).build(salesDto);
+        verify(salesEntityBuilder).build(updatedSalesDto);
+
+        verify(sendMessage).sendMessage(1L);
     }
 
     @Test

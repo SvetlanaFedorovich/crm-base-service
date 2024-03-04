@@ -42,7 +42,7 @@ dependencies {
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
     runtimeOnly "org.postgresql:postgresql"
     implementation group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: '2.16.1'
-
+    implementation 'org.springframework.kafka:spring-kafka'
 }
 
 test {
