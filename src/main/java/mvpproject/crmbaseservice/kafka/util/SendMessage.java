@@ -25,12 +25,8 @@ public class SendMessage {
             if (exception != null) {
                 LOGGER.error("Failed to send message for Sales with Id: {}", id, exception.getMessage());
             } else {
-                LOGGER.info("Topic: {}", result.getRecordMetadata().topic());
-                LOGGER.info("Partition: {}", result.getRecordMetadata().partition());
-                LOGGER.info("Offset: {}", result.getRecordMetadata().offset());
                 LOGGER.info("Sales with Id: {} updated successfully", id);
             }
-            LOGGER.info("Message sent successfully!");
         });
     }
 }
