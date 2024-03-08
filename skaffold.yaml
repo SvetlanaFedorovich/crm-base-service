@@ -9,4 +9,7 @@ build:
         dockerfile: Dockerfile
 manifests:
   rawYaml:
-    - k8s/*.yaml
+    - k8s/app/*.yaml
+    - k8s/kafka/*.yaml
+    - k8s/zookeeper/*.yaml
+
